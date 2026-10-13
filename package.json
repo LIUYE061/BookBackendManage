@@ -1,0 +1,23 @@
+{
+  "name": "bookbackendmanage",
+  "version": "1.0.0",
+  "description": "图书借阅系统后台管理 - Express + Sequelize(本地 SQL Server / CI MySQL)",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "jquery": "^3.7.1",
+    "mysql2": "^3.11.5",
+    "sequelize": "^6.37.5",
+    "tedious": "^18.6.1"
+  },
+  "devDependencies": {
+    "supertest": "^7.0.0"
+  }
+}
