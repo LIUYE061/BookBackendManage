@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 图书借阅系统后台管理</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<%- include('partials/header') %>
+
+<div class="content">
+  <h2>新增图书</h2>
+  <div class="form">
+    <%- include('partials/bookForm', {
+      action: '/books',
+      book: null,
+      types: types,
+      backUrl: backUrl,
+      back: back,
+      submitLabel: '保存',
+      today: today
+    }) %>
+  </div>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>

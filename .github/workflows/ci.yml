@@ -1,0 +1,56 @@
+name: 回归测试
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  regression-test:
+    name: MySQL 环境回归测试
+    runs-on: ubuntu-latest
+
+    # 数据库服务容器:MySQL 8(quiz07 要求的 MySQL 环境)
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: book_backend_manage
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+
+    env:
+      DB_DIALECT: mysql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: book_backend_manage
+      DB_USER: root
+      DB_PASS: root
+
+    steps:
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: 安装依赖
+        run: npm ci
+
+      - name: 加载数据库脚本(建表 + 测试数据)
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq mysql-client
+          mysql -h127.0.0.1 -uroot -proot book_backend_manage < sql/book_backend_manage.sql
+
+      - name: 运行回归测试
+        run: npm test

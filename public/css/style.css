@@ -1,0 +1,414 @@
+/* =====================================================================
+   图书借阅系统后台管理 - 全局样式
+   (与 Pixso 设计稿一致的设计规范)
+   ===================================================================== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: #ffffff;
+  color: #1f2937;
+  font-size: 13px;
+}
+
+/* ---------- 顶部标题栏 ---------- */
+.header {
+  height: 56px;
+  padding: 0 32px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header .title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1f2937;
+}
+.header .sub {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ---------- 操作提示 banner ---------- */
+.banner {
+  margin: 16px 32px 0;
+  padding: 10px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.banner .icon {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.banner.success {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+}
+.banner.success .icon {
+  background: #10b981;
+}
+.banner.error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+}
+.banner.error .icon {
+  background: #ef4444;
+}
+
+/* ---------- 工具条(搜索 / 新增) ---------- */
+.toolbar {
+  padding: 16px 32px 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.toolbar label {
+  font-size: 13px;
+  color: #374151;
+}
+.toolbar input[type="text"] {
+  width: 220px;
+  height: 32px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 13px;
+  outline: none;
+}
+.toolbar input[type="text"]:focus {
+  border-color: #2f6fed;
+  box-shadow: 0 0 0 2px rgba(47, 111, 237, 0.15);
+}
+.toolbar .spacer {
+  flex: 1;
+}
+
+/* ---------- 按钮 ---------- */
+.btn {
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-primary {
+  background: #2f6fed;
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #275fcc;
+}
+.btn-secondary {
+  background: #fff;
+  color: #374151;
+  border-color: #d1d5db;
+}
+.btn-secondary:hover {
+  background: #f3f4f6;
+}
+.btn-lg {
+  height: 34px;
+  padding: 0 28px;
+}
+
+/* ---------- 表格(图书列表) ---------- */
+.table-wrap {
+  margin: 8px 32px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead th {
+  background: #f3f4f6;
+  color: #4b5563;
+  font-weight: 600;
+  height: 40px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 13px;
+}
+tbody td {
+  height: 44px;
+  border-bottom: 1px solid #f1f3f5;
+  text-align: center;
+  color: #374151;
+  font-size: 13px;
+}
+/* 隔行变色 */
+tbody tr:nth-child(even) {
+  background: #f8fafc;
+}
+tbody tr:hover {
+  background: #eff4ff;
+}
+.empty-row td {
+  color: #9ca3af;
+  height: 120px;
+}
+
+/* 是否借阅徽标 */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+}
+.badge-ok {
+  background: #ecfdf5;
+  color: #047857;
+  border: 1px solid #a7f3d0;
+}
+.badge-out {
+  background: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+}
+
+/* 操作链接 */
+.link {
+  color: #2f6fed;
+  text-decoration: none;
+  margin: 0 6px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-family: inherit;
+  padding: 0;
+}
+.link-danger {
+  color: #dc2626;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+/* ---------- 分页 ---------- */
+.pager {
+  margin: 12px 32px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #6b7280;
+  font-size: 13px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.pager .pages {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+}
+.pg {
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  color: #374151;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration: none;
+}
+.pg.active {
+  background: #2f6fed;
+  border-color: #2f6fed;
+  color: #fff;
+  cursor: default;
+}
+.pg.disabled {
+  color: #c0c4cc;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ---------- 内容区标题 ---------- */
+.content {
+  margin: 24px 32px 0;
+}
+.content h2 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 14px;
+  padding-left: 10px;
+  border-left: 4px solid #2f6fed;
+}
+
+/* ---------- 详情(查看页,只读) ---------- */
+.detail {
+  width: 640px;
+  max-width: 100%;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+}
+.detail .row {
+  display: flex;
+  border-bottom: 1px solid #f1f3f5;
+}
+.detail .row:last-child {
+  border-bottom: none;
+}
+.detail .label {
+  width: 130px;
+  flex-shrink: 0;
+  padding: 12px 16px;
+  background: #f9fafb;
+  color: #4b5563;
+  font-weight: 600;
+  border-right: 1px solid #e5e7eb;
+}
+.detail .value {
+  flex: 1;
+  padding: 12px 16px;
+  color: #374151;
+}
+.note {
+  margin-top: 12px;
+  color: #9ca3af;
+  font-size: 12px;
+}
+
+/* ---------- 表单(新增 / 修改) ---------- */
+.form {
+  width: 600px;
+  max-width: 100%;
+}
+.frow {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 14px;
+}
+.flabel {
+  width: 110px;
+  text-align: right;
+  padding-right: 14px;
+  color: #4b5563;
+  font-size: 13px;
+  line-height: 34px;
+}
+.flabel .req {
+  color: #dc2626;
+  margin-right: 2px;
+}
+.fcontrol {
+  flex: 1;
+}
+.fcontrol input[type="text"],
+.fcontrol input[type="date"],
+.fcontrol select {
+  width: 100%;
+  height: 34px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  padding: 0 10px;
+  font-size: 13px;
+  outline: none;
+  background: #fff;
+  font-family: inherit;
+}
+.fcontrol input:focus,
+.fcontrol select:focus {
+  border-color: #2f6fed;
+  box-shadow: 0 0 0 2px rgba(47, 111, 237, 0.15);
+}
+.fcontrol input[readonly] {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+.fcontrol .error-input {
+  border-color: #dc2626 !important;
+}
+.radio-group {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  height: 34px;
+}
+.radio-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: #374151;
+}
+.hint {
+  font-size: 12px;
+  color: #9ca3af;
+  margin-top: 4px;
+}
+/* jQuery 校验错误提示 */
+.form-error {
+  margin: 0 0 14px 110px;
+  padding: 10px 14px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  color: #b91c1c;
+  font-size: 13px;
+  display: none;
+}
+.field-error {
+  color: #dc2626;
+  font-size: 12px;
+  margin-top: 4px;
+  display: none;
+}
+
+/* ---------- 操作按钮区 ---------- */
+.actions {
+  margin-top: 26px;
+  padding-left: 110px;
+  display: flex;
+  gap: 12px;
+}
+
+/* ---------- 错误页 ---------- */
+.error-page {
+  margin: 80px auto;
+  width: 420px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 40px 24px;
+}
+.error-page h2 {
+  color: #1f2937;
+  font-size: 18px;
+  margin-bottom: 12px;
+}
+.error-page p {
+  color: #6b7280;
+  margin-bottom: 24px;
+}
