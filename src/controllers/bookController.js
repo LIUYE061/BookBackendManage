@@ -9,10 +9,26 @@ const bookService = require('../services/BookService');
 const MESSAGES = {
   add_success: '添加成功',
   add_fail: '添加失败',
+  add_dup: '添加失败:图书编号已存在',
+  add_date: '添加失败:出版日期不能晚于今天',
   update_success: '修改成功',
   update_fail: '修改失败',
+  update_dup: '修改失败:图书编号已存在',
+  update_date: '修改失败:出版日期不能晚于今天',
   del_success: '删除成功',
   del_fail: '删除失败',
+};
+
+/** 校验失败错误码 → 对应提示消息键 */
+const FAIL_MSG = {
+  add: {
+    DUPLICATE_CODE: 'add_dup',
+    FUTURE_DATE: 'add_date',
+  },
+  update: {
+    DUPLICATE_CODE: 'update_dup',
+    FUTURE_DATE: 'update_date',
+  },
 };
 
 /**
@@ -64,7 +80,7 @@ const bookController = {
         totalPages,
         bookName: (req.query.bookName || '').trim(),
         message: req.query.msg ? MESSAGES[req.query.msg] || null : null,
-        messageType: req.query.msg && req.query.msg.endsWith('_fail') ? 'error' : 'success',
+        messageType: req.query.msg && MESSAGES[req.query.msg] && MESSAGES[req.query.msg].includes('失败') ? 'error' : 'success',
       });
     } catch (e) {
       next(e);
@@ -107,8 +123,8 @@ const bookController = {
       const ok = await bookService.addBook(req.body);
       res.redirect(backUrl(backParams(req), ok ? 'add_success' : 'add_fail'));
     } catch (e) {
-      // 校验失败或数据库异常:提示失败信息
-      res.redirect(backUrl(backParams(req), 'add_fail'));
+      // 校验失败(编号重复/日期非法)或数据库异常:提示对应失败信息
+      res.redirect(backUrl(backParams(req), FAIL_MSG.add[e.code] || 'add_fail'));
     }
   },
 
@@ -125,6 +141,7 @@ const bookController = {
         types,
         backUrl: backUrl(req.query),
         back: { bookName: req.query.bookName || '', page: req.query.page || 1 },
+        today: todayStr(),
       });
     } catch (e) {
       next(e);
@@ -137,7 +154,7 @@ const bookController = {
       const ok = await bookService.updateBook(req.params.id, req.body);
       res.redirect(backUrl(backParams(req), ok ? 'update_success' : 'update_fail'));
     } catch (e) {
-      res.redirect(backUrl(backParams(req), 'update_fail'));
+      res.redirect(backUrl(backParams(req), FAIL_MSG.update[e.code] || 'update_fail'));
     }
   },
 
@@ -148,6 +165,17 @@ const bookController = {
       res.redirect(backUrl(backParams(req), ok ? 'del_success' : 'del_fail'));
     } catch (e) {
       res.redirect(backUrl(backParams(req), 'del_fail'));
+    }
+  },
+
+  /** 图书编号查重(AJAX):供表单 jQuery 失焦校验调用 */
+  async checkCode(req, res, next) {
+    try {
+      const excludeId = req.query.excludeId ? Number(req.query.excludeId) : undefined;
+      const available = await bookService.isBookCodeAvailable(req.query.bookCode, excludeId);
+      res.json({ available });
+    } catch (e) {
+      next(e);
     }
   },
 };

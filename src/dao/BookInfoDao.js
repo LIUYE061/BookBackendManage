@@ -37,6 +37,17 @@ class BookInfoDao {
     });
   }
 
+  /**
+   * 按图书编号统计条数(查重用)
+   * @param {string} bookCode 图书编号
+   * @param {number} [excludeBookId] 排除的图书ID(修改时排除自身)
+   */
+  async countByCode(bookCode, excludeBookId) {
+    const where = { bookCode };
+    if (excludeBookId) where.bookId = { [Op.ne]: excludeBookId };
+    return BookInfo.count({ where });
+  }
+
   /** 新增图书(事务由 Service 控制) */
   async create(data, transaction) {
     return BookInfo.create(data, { transaction });

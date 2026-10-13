@@ -294,3 +294,93 @@ test('访问不存在的图书返回 404 提示页', async () => {
   assert.equal(res.status, 404);
   assert.match(res.text, /图书不存在/);
 });
+
+/* ---------- 9. 图书编号唯一性 ---------- */
+
+test('编号查重接口:已存在/可用/排除自身', async () => {
+  const dup = await request(app).get(`/books/check-code?bookCode=${encodeURIComponent('B-0001')}`);
+  assert.equal(dup.status, 200);
+  assert.deepEqual(dup.body, { available: false });
+
+  const free = await request(app).get(`/books/check-code?bookCode=${encodeURIComponent('B-9999')}`);
+  assert.deepEqual(free.body, { available: true });
+
+  // 修改时排除自身:编号属于自己时视为可用
+  const book = await findByCode('B-0001');
+  const self = await request(app).get(`/books/check-code?bookCode=${encodeURIComponent('B-0001')}&excludeId=${book.bookId}`);
+  assert.deepEqual(self.body, { available: true });
+});
+
+test('新增:图书编号重复被拒绝并提示', async () => {
+  const res = await request(app).post('/books').type('form').send({
+    bookCode: 'B-0001', bookName: '重复编号书', bookType: '1', bookAuthor: '测试',
+    publishPress: '测试社', publishDate: '2020-01-01', borrowed: '0',
+  });
+  assert.equal(res.status, 302);
+  assert.match(res.headers.location, /msg=add_dup/);
+  assert.equal(await BookInfo.count({ where: { bookName: '重复编号书' } }), 0, '重复编号不应入库');
+  const listRes = await request(app).get('/books?msg=add_dup');
+  assert.match(listRes.text, /图书编号已存在/);
+});
+
+test('修改:图书编号重复被拒绝并提示,保留自身编号可通过', async () => {
+  const book = await findByCode('B-0003');
+  // 改成已存在的编号 → 拒绝
+  const dupRes = await request(app).post(`/books/${book.bookId}/update`).type('form').send({
+    bookCode: 'B-0001', bookName: '百年孤独', bookType: '2', bookAuthor: '加西亚·马尔克斯',
+    publishPress: '南海出版公司', publishDate: '2011-06-01', borrowed: '0',
+  });
+  assert.match(dupRes.headers.location, /msg=update_dup/);
+  const listRes = await request(app).get('/books?msg=update_dup');
+  assert.match(listRes.text, /图书编号已存在/);
+
+  // 保留自身编号 → 通过
+  const okRes = await request(app).post(`/books/${book.bookId}/update`).type('form').send({
+    bookCode: 'B-0003', bookName: '百年孤独', bookType: '2', bookAuthor: '加西亚·马尔克斯',
+    publishPress: '南海出版公司', publishDate: '2011-06-01', borrowed: '0',
+  });
+  assert.match(okRes.headers.location, /msg=update_success/);
+});
+
+/* ---------- 10. 出版日期不能晚于今天 ---------- */
+
+test('新增:出版日期为未来时间被拒绝并提示', async () => {
+  const res = await request(app).post('/books').type('form').send({
+    bookCode: 'B-F01', bookName: '未来日期书', bookType: '1', bookAuthor: '测试',
+    publishPress: '测试社', publishDate: '2099-01-01', borrowed: '0',
+  });
+  assert.equal(res.status, 302);
+  assert.match(res.headers.location, /msg=add_date/);
+  assert.equal(await BookInfo.count({ where: { bookCode: 'B-F01' } }), 0, '未来日期不应入库');
+  const listRes = await request(app).get('/books?msg=add_date');
+  assert.match(listRes.text, /出版日期不能晚于今天/);
+});
+
+test('修改:出版日期为未来时间被拒绝并提示', async () => {
+  const book = await findByCode('B-0004');
+  const res = await request(app).post(`/books/${book.bookId}/update`).type('form').send({
+    bookCode: 'B-0004', bookName: '人类群星闪耀时', bookType: '3', bookAuthor: '斯蒂芬·茨威格',
+    publishPress: '三联书店', publishDate: '2099-12-31', borrowed: '1',
+  });
+  assert.match(res.headers.location, /msg=update_date/);
+  const listRes = await request(app).get('/books?msg=update_date');
+  assert.match(listRes.text, /出版日期不能晚于今天/);
+});
+
+test('表单:出版日期输入框带 max 限制,编号输入框带查重标记', async () => {
+  const res = await request(app).get('/books/new');
+  const today = new Date();
+  const m = String(today.getMonth() + 1).padStart(2, '0');
+  const d = String(today.getDate()).padStart(2, '0');
+  assert.match(res.text, new RegExp(`name="publishDate"[^>]*max="${today.getFullYear()}-${m}-${d}"`));
+  assert.match(res.text, /data-exclude-id=""/);
+
+  // 交互脚本中包含编号查重与日期校验逻辑
+  const js = await request(app).get('/js/main.js');
+  assert.match(js.text, /check-code/);
+  assert.match(js.text, /出版日期不能晚于今天/);
+
+  const book = await findByCode('B-0005');
+  const edit = await request(app).get(`/books/${book.bookId}/edit`);
+  assert.match(edit.text, new RegExp(`data-exclude-id="${book.bookId}"`));
+});

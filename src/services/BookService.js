@@ -38,6 +38,31 @@ function validate(data) {
     err.name = 'ValidationError';
     throw err;
   }
+  // 出版日期不能晚于今天
+  const publishDate = new Date(`${String(data.publishDate).trim()}T00:00:00`);
+  if (Number.isNaN(publishDate.getTime())) {
+    const err = new Error('出版日期格式非法');
+    err.name = 'ValidationError';
+    err.code = 'FUTURE_DATE';
+    throw err;
+  }
+  if (publishDate > new Date()) {
+    const err = new Error('出版日期不能晚于今天');
+    err.name = 'ValidationError';
+    err.code = 'FUTURE_DATE';
+    throw err;
+  }
+}
+
+/** 图书编号查重,重复时抛出带 code 的校验错误 */
+async function assertCodeAvailable(bookCode, excludeBookId) {
+  const exists = await bookInfoDao.countByCode(bookCode.trim(), excludeBookId);
+  if (exists > 0) {
+    const err = new Error('图书编号已存在');
+    err.name = 'ValidationError';
+    err.code = 'DUPLICATE_CODE';
+    throw err;
+  }
 }
 
 class BookService {
@@ -74,9 +99,23 @@ class BookService {
     return bookTypeDao.findAll();
   }
 
+  /**
+   * 图书编号是否可用(供前端 jQuery 失焦 AJAX 查重)
+   * @param {string} bookCode 图书编号
+   * @param {number} [excludeBookId] 修改时排除自身
+   */
+  async isBookCodeAvailable(bookCode, excludeBookId) {
+    const code = (bookCode || '').trim();
+    if (!code) return true;
+    const count = await bookInfoDao.countByCode(code, excludeBookId);
+    return count === 0;
+  }
+
   /** 新增图书:入库人默认为当前登录用户,入库时间默认为当前时间,是否借阅默认未借阅 */
   async addBook(data) {
     validate(data);
+    // 图书编号唯一性校验
+    await assertCodeAvailable(data.bookCode);
     const transaction = await sequelize.transaction();
     try {
       await bookInfoDao.create(
@@ -108,6 +147,8 @@ class BookService {
    */
   async updateBook(bookId, data) {
     validate(data);
+    // 图书编号唯一性校验(排除自身)
+    await assertCodeAvailable(data.bookCode, Number(bookId));
     const transaction = await sequelize.transaction();
     try {
       const affected = await bookInfoDao.update(

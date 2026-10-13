@@ -12,7 +12,7 @@
   <div class="frow">
     <div class="flabel"><span class="req">*</span>图书编号:</div>
     <div class="fcontrol">
-      <input type="text" name="bookCode" placeholder="请输入图书编号,如 B-0006" value="<%= book ? book.bookCode : '' %>">
+      <input type="text" name="bookCode" placeholder="请输入图书编号,如 B-0006" value="<%= book ? book.bookCode : '' %>" data-exclude-id="<%= book ? book.bookId : '' %>">
       <div class="field-error" data-for="bookCode"></div>
     </div>
   </div>
@@ -57,7 +57,7 @@
   <div class="frow">
     <div class="flabel"><span class="req">*</span>出版日期:</div>
     <div class="fcontrol">
-      <input type="date" name="publishDate" value="<%= book ? book.publishDate : '' %>">
+      <input type="date" name="publishDate" value="<%= book ? book.publishDate : '' %>" max="<%= today %>">
       <div class="field-error" data-for="publishDate"></div>
     </div>
   </div>

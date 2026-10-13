@@ -9,6 +9,9 @@ const router = express.Router();
 // 图书列表(查看所有 / 按名称模糊查询 / 分页)
 router.get('/', bookController.index);
 
+// 图书编号查重(AJAX,须注册在 /:id 之前)
+router.get('/check-code', bookController.checkCode);
+
 // 新增图书
 router.get('/new', bookController.newForm);
 router.post('/', bookController.create);

@@ -38,7 +38,8 @@ CREATE TABLE book_info (
   createdBy      VARCHAR(50)  NOT NULL                COMMENT '创建人(入库人)',
   creationTime   DATE         NOT NULL                COMMENT '创建时间(入库时间)',
   lastUpdatetime DATE         NULL                    COMMENT '最新更新时间',
-  PRIMARY KEY (bookId)
+  PRIMARY KEY (bookId),
+  UNIQUE KEY uk_book_code (bookCode)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COMMENT = '图书信息表';
