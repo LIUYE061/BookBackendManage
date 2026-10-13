@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 图书借阅系统后台管理</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<%- include('partials/header') %>
+
+<div class="content">
+  <h2>图书详细信息</h2>
+  <div class="detail">
+    <div class="row"><div class="label">图书编号</div><div class="value"><%= book.bookCode %></div></div>
+    <div class="row"><div class="label">图书名称</div><div class="value"><%= book.bookName %></div></div>
+    <div class="row"><div class="label">图书类型</div><div class="value"><%= book.type ? book.type.typeName : '-' %></div></div>
+    <div class="row"><div class="label">作者</div><div class="value"><%= book.bookAuthor %></div></div>
+    <div class="row"><div class="label">出版社</div><div class="value"><%= book.publishPress %></div></div>
+    <div class="row"><div class="label">出版日期</div><div class="value"><%= book.publishDate %></div></div>
+    <div class="row">
+      <div class="label">是否借阅</div>
+      <div class="value">
+        <% if (book.borrowed === 1) { %>
+        <span class="badge badge-out">已借阅</span>
+        <% } else { %>
+        <span class="badge badge-ok">未借阅</span>
+        <% } %>
+      </div>
+    </div>
+    <div class="row"><div class="label">入库人</div><div class="value"><%= book.createdBy %></div></div>
+    <div class="row"><div class="label">入库时间</div><div class="value"><%= book.creationTime %></div></div>
+  </div>
+  <div class="note">注:本页面所有字段均为只读,不可修改。</div>
+  <div class="actions" style="width:640px;padding-left:0;justify-content:center">
+    <a href="<%= backUrl %>" class="btn btn-secondary btn-lg">返回</a>
+  </div>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>

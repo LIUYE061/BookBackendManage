@@ -1,0 +1,95 @@
+<% /*
+  共用图书表单(新增 / 修改)
+  参数:action 提交地址、book 图书对象(新增时为 null)、types 类型列表、
+       backUrl 返回地址、back 原查询条件、submitLabel 提交按钮文案、
+       today 新增页入库时间默认值(修改页用 book.creationTime)
+*/ %>
+<div class="form-error">带 * 的为必填项,请完整填写后再提交!</div>
+<form id="bookForm" method="post" action="<%= action %>">
+  <input type="hidden" name="_bookName" value="<%= back.bookName %>">
+  <input type="hidden" name="_page" value="<%= back.page %>">
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>图书编号:</div>
+    <div class="fcontrol">
+      <input type="text" name="bookCode" placeholder="请输入图书编号,如 B-0006" value="<%= book ? book.bookCode : '' %>">
+      <div class="field-error" data-for="bookCode"></div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>图书名称:</div>
+    <div class="fcontrol">
+      <input type="text" name="bookName" placeholder="请输入图书名称" value="<%= book ? book.bookName : '' %>">
+      <div class="field-error" data-for="bookName"></div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>图书类型:</div>
+    <div class="fcontrol">
+      <select name="bookType">
+        <option value="">-- 请选择 --</option>
+        <% types.forEach(function (t) { %>
+        <option value="<%= t.id %>" <%= book && book.bookType === t.id ? 'selected' : '' %>><%= t.typeName %></option>
+        <% }) %>
+      </select>
+      <div class="field-error" data-for="bookType"></div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>作者:</div>
+    <div class="fcontrol">
+      <input type="text" name="bookAuthor" placeholder="请输入作者" value="<%= book ? book.bookAuthor : '' %>">
+      <div class="field-error" data-for="bookAuthor"></div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>出版社:</div>
+    <div class="fcontrol">
+      <input type="text" name="publishPress" placeholder="请输入出版社" value="<%= book ? book.publishPress : '' %>">
+      <div class="field-error" data-for="publishPress"></div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>出版日期:</div>
+    <div class="fcontrol">
+      <input type="date" name="publishDate" value="<%= book ? book.publishDate : '' %>">
+      <div class="field-error" data-for="publishDate"></div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>是否借阅:</div>
+    <div class="fcontrol">
+      <div class="radio-group">
+        <label><input type="radio" name="borrowed" value="1" <%= book && book.borrowed === 1 ? 'checked' : '' %>>已借阅</label>
+        <label><input type="radio" name="borrowed" value="0" <%= !book || book.borrowed !== 1 ? 'checked' : '' %>>未借阅</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>入库人:</div>
+    <div class="fcontrol">
+      <input type="text" name="createdBy" value="<%= book ? book.createdBy : 'admin' %>" readonly>
+      <div class="hint"><%= book ? '入库人为只读,不可修改' : '默认为当前登录用户:系统管理员' %></div>
+    </div>
+  </div>
+
+  <div class="frow">
+    <div class="flabel"><span class="req">*</span>入库时间:</div>
+    <div class="fcontrol">
+      <input type="text" name="creationTime" value="<%= book ? book.creationTime : today %>" readonly>
+      <div class="hint"><%= book ? '入库时间为只读,不可修改' : '默认保存时自动取当前系统时间' %></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button type="submit" class="btn btn-primary btn-lg"><%= submitLabel %></button>
+    <a href="<%= backUrl %>" class="btn btn-secondary btn-lg">返回</a>
+  </div>
+</form>

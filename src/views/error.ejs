@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title><%= title %> - 图书借阅系统后台管理</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<%- include('partials/header') %>
+
+<div class="error-page">
+  <h2><%= title %></h2>
+  <p><%= message %></p>
+  <a href="<%= backUrl %>" class="btn btn-primary btn-lg">返回列表</a>
+</div>
+
+<script src="/js/jquery.min.js"></script>
+<script src="/js/main.js"></script>
+</body>
+</html>
