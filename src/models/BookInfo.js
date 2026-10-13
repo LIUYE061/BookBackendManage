@@ -20,6 +20,7 @@ module.exports = (sequelize) =>
       bookCode: {
         type: DataTypes.STRING(50),
         allowNull: false,
+        unique: true,
         comment: '图书编号',
       },
       bookName: {

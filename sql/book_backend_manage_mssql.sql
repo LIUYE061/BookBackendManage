@@ -38,7 +38,8 @@ CREATE TABLE book_info (
   borrowed       INT           NOT NULL DEFAULT 0,
   createdBy      NVARCHAR(50)  NOT NULL,
   creationTime   DATE          NOT NULL,
-  lastUpdatetime DATE          NULL
+  lastUpdatetime DATE          NULL,
+  CONSTRAINT UQ_book_info_bookCode UNIQUE (bookCode)
 );
 GO
 
